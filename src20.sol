@@ -46,7 +46,7 @@ contract SRC20 is
         return _orgName;
     }
 
-    function setOrgName(string memory orgName_) public {
+    function setOrgName(string memory orgName_) public onlyOwner {
         _orgName = orgName_;
     }
 
@@ -54,7 +54,7 @@ contract SRC20 is
         return _logoUrl;
     }
 
-    function setLogoUrl(string memory logoUrl_) public {
+    function setLogoUrl(string memory logoUrl_) public onlyOwner {
         _logoUrl = logoUrl_;
     }
 
@@ -62,7 +62,7 @@ contract SRC20 is
         return _description;
     }
 
-    function setDescription(string memory description_) public {
+    function setDescription(string memory description_) public onlyOwner {
         _description = description_;
     }
 
@@ -70,7 +70,7 @@ contract SRC20 is
         return _officialUrl;
     }
 
-    function setOfficialUrl(string memory officialUrl_) public {
+    function setOfficialUrl(string memory officialUrl_) public onlyOwner {
         _officialUrl = officialUrl_;
     }
 
@@ -78,7 +78,7 @@ contract SRC20 is
         return _whitePaperUrl;
     }
 
-    function setWhitePaperUrl(string memory whitePaperUrl_) public {
+    function setWhitePaperUrl(string memory whitePaperUrl_) public onlyOwner {
         _whitePaperUrl = whitePaperUrl_;
     }
 
