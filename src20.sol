@@ -27,24 +27,13 @@ contract SRC20 is
     function initialize(
         string memory name_,
         string memory symbol_,
-        uint256 initialSupply_,
-        string memory orgName_,
-        string memory logoUrl_,
-        string memory description_,
-        string memory officialUrl_,
-        string memory whitePaperUrl_
+        uint256 initialSupply_
     ) public initializer {
         __ERC20_init(name_, symbol_);
         __Ownable_init();
         __UUPSUpgradeable_init();
 
         _mint(msg.sender, initialSupply_);
-
-        _orgName = orgName_;
-        _logoUrl = logoUrl_;
-        _description = description_;
-        _officialUrl = officialUrl_;
-        _whitePaperUrl = whitePaperUrl_;
     }
 
     function _authorizeUpgrade(address newImplementation)
@@ -55,6 +44,10 @@ contract SRC20 is
 
     function orgName() public view returns (string memory) {
         return _orgName;
+    }
+
+    function setOrgName(string memory orgName_) public {
+        _orgName = orgName_;
     }
 
     function logoUrl() public view returns (string memory) {
