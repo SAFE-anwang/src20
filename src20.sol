@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./3rd/@openzeppelin/contracts@4.9.6/proxy/ERC1967/ERC1967Proxy.sol";
-import "./3rd/@openzeppelin/contracts-upgradeable@4.9.6/token/ERC20/ERC20Upgradeable.sol";
-import "./3rd/@openzeppelin/contracts-upgradeable@4.9.6/access/OwnableUpgradeable.sol";
-import "./3rd/@openzeppelin/contracts-upgradeable@4.9.6/proxy/utils/Initializable.sol";
-import "./3rd/@openzeppelin/contracts-upgradeable@4.9.6/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts@4.9.6/proxy/ERC1967/ERC1967Proxy.sol";
+import "@openzeppelin/contracts-upgradeable@4.9.6/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable@4.9.6/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable@4.9.6/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable@4.9.6/proxy/utils/UUPSUpgradeable.sol";
 
 contract SRC20 is 
     Initializable,
