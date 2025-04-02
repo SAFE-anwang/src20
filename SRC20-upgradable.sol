@@ -7,7 +7,7 @@ import "@openzeppelin/contracts-upgradeable@4.9.6/access/OwnableUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable@4.9.6/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable@4.9.6/proxy/utils/UUPSUpgradeable.sol";
 
-contract SRC20 is 
+contract SRC20Upgradable is 
     Initializable,
     ERC20Upgradeable,
     OwnableUpgradeable,
