@@ -2214,7 +2214,7 @@ pragma solidity ^0.8.0;
 
 
 
-contract SRC20BurnablePausable is SRC20Meta, ERC20, ERC20Permit, ERC20Burnable, ERC20Pausable {
+contract SRC20 is SRC20Meta, ERC20, ERC20Permit, ERC20Burnable, ERC20Pausable {
     constructor(
         string memory name_,
         string memory symbol_,

@@ -3765,7 +3765,7 @@ pragma solidity ^0.8.0;
 
 
 
-contract SRC20UpgradeableBurnablePausable is SRC20UpgradeableMeta, ERC20Upgradeable, ERC20PermitUpgradeable, ERC20BurnableUpgradeable, ERC20PausableUpgradeable {
+contract SRC20Upgradeable is SRC20UpgradeableMeta, ERC20Upgradeable, ERC20PermitUpgradeable, ERC20BurnableUpgradeable, ERC20PausableUpgradeable {
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();

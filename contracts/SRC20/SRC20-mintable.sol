@@ -2027,7 +2027,7 @@ pragma solidity ^0.8.0;
 
 
 
-contract SRC20Mintable is SRC20Meta, ERC20, ERC20Permit {
+contract SRC20 is SRC20Meta, ERC20, ERC20Permit {
     constructor(
         string memory name_,
         string memory symbol_,
