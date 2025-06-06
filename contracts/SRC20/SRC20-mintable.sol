@@ -1963,15 +1963,40 @@ abstract contract Ownable is Context {
     }
 }
 
-// File: contracts/SRC20/SRC20Meta.sol
+// File: contracts/utils/Common.sol
 
 
 pragma solidity ^0.8.0;
 
+library Common {
+    address internal constant PROPERTY_ADDR = 0x0000000000000000000000000000000000001000;
+
+    function getMinLockAmount() public returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "deposit_min_amount"));
+        require(success, "get deposit_min_amount failed");
+        return abi.decode(data, (uint256));
+    }
+
+    function getLogoPayAmount() public returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "logo_payamount"));
+        require(success, "get logo_payamount failed");
+        return abi.decode(data, (uint256));
+    }
+
+    function getNumberInDay() public returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "block_space"));
+        require(success, "get block_space failed");
+        return 86400 / abi.decode(data, (uint256));
+    }
+}
+// File: contracts/SRC20/SRC20Meta.sol
+
+
+pragma solidity ^0.8.0;
 
 abstract contract SRC20Meta is Ownable {
     string _orgName;
-    string _logoUrl;
+    bytes _logo;
     string _description;
     string _officialUrl;
     string _whitePaperUrl;
@@ -1984,12 +2009,14 @@ abstract contract SRC20Meta is Ownable {
         _orgName = orgName_;
     }
 
-    function logoUrl() public view returns (string memory) {
-        return _logoUrl;
+    function logo() public view returns (bytes memory) {
+        return _logo;
     }
 
-    function setLogoUrl(string memory logoUrl_) public onlyOwner {
-        _logoUrl = logoUrl_;
+    function setLogoUrl(bytes memory logo_) public payable onlyOwner {
+        require(logo_.length > 0 && logo_.length <= 512000, "invalid logo size");
+        require(msg.value >= Common.getLogoPayAmount(), "invalid pay amount");
+        _logo = logo_;
     }
 
     function description() public view returns (string memory) {
@@ -2022,10 +2049,7 @@ abstract contract SRC20Meta is Ownable {
 // File: contracts/SRC20/SRC20-mintable.sol
 
 
-pragma solidity ^0.8.0;
-
-
-
+pragma solidity ^0.8.0;
 
 contract SRC20 is SRC20Meta, ERC20, ERC20Permit {
     constructor(
