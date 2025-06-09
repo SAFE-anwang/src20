@@ -1,34 +1,5 @@
-
-// File: contracts/utils/common.sol
-
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-
-library Common {
-    address internal constant PROPERTY_ADDR = 0x0000000000000000000000000000000000001000;
-
-    function getMinLockAmount() public returns (uint256) {
-        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "deposit_min_amount"));
-        require(success, "get deposit_min_amount failed");
-        return abi.decode(data, (uint256));
-    }
-
-    function getLogoPayAmount() public returns (uint256) {
-        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "logo_payamount"));
-        require(success, "get logo_payamount failed");
-        return abi.decode(data, (uint256));
-    }
-
-    function getNumberInDay() public returns (uint256) {
-        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "block_space"));
-        require(success, "get block_space failed");
-        return 86400 / abi.decode(data, (uint256));
-    }
-}
-// File: contracts/SRC20/SRC20Lock.sol
-
-
-pragma solidity ^0.8.0;
 
 contract SRC20Lock {
     uint256 no;
@@ -38,6 +9,8 @@ contract SRC20Lock {
     mapping(address => uint256[]) addr2ids;
     mapping(uint256 => uint256) id2index;
     mapping(uint256 => address) id2addr;
+
+    address internal constant PROPERTY_ADDR = 0x0000000000000000000000000000000000001000;
 
     struct LockRecord {
         uint256 id;
@@ -61,7 +34,7 @@ contract SRC20Lock {
 
     function deposit(address _to, uint256 _lockDay) public payable returns (uint256) {
         require(_lockDay > 0, "invalid lock day");
-        require(msg.value >= Common.getMinLockAmount(), "invalid lock amount");
+        require(msg.value >= getMinLockAmount(), "invalid lock amount");
         LockRecord memory record = addRecord(_to, msg.value, _lockDay);
         emit SRC20Deposit(_to, record.id, msg.value, _lockDay, record.unlockHeight);
         return record.id;
@@ -195,7 +168,7 @@ contract SRC20Lock {
     // add record
     function addRecord(address _addr, uint256 _amount, uint256 _lockDay) internal returns (LockRecord memory) {
         uint256 startHeight = block.number;
-        uint256 unlockHeight = startHeight + _lockDay * Common.getNumberInDay();
+        uint256 unlockHeight = startHeight + _lockDay * getNumberInDay();
         uint256 id = ++no;
         LockRecord memory record = LockRecord(id, _addr, _amount, _lockDay, startHeight, unlockHeight);
         addr2amount[_addr] += _amount;
@@ -231,5 +204,17 @@ contract SRC20Lock {
 
         delete id2index[_id];
         delete id2addr[_id];
+    }
+
+    function getMinLockAmount() public returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "deposit_min_amount"));
+        require(success, "get deposit_min_amount failed");
+        return abi.decode(data, (uint256));
+    }
+
+    function getNumberInDay() public returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "block_space"));
+        require(success, "get block_space failed");
+        return 86400 / abi.decode(data, (uint256));
     }
 }
