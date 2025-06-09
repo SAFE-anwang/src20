@@ -206,14 +206,14 @@ contract SRC20Lock {
         delete id2addr[_id];
     }
 
-    function getMinLockAmount() public returns (uint256) {
-        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "deposit_min_amount"));
+    function getMinLockAmount() internal view returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.staticcall(abi.encodeWithSignature("getValue(string)", "deposit_min_amount"));
         require(success, "get deposit_min_amount failed");
         return abi.decode(data, (uint256));
     }
 
-    function getNumberInDay() public returns (uint256) {
-        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getValue(string)", "block_space"));
+    function getNumberInDay() internal view returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.staticcall(abi.encodeWithSignature("getValue(string)", "block_space"));
         require(success, "get block_space failed");
         return 86400 / abi.decode(data, (uint256));
     }

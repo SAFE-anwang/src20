@@ -2165,8 +2165,8 @@ abstract contract SRC20Meta is Ownable {
 
     function version() public pure virtual returns (string memory);
 
-    function getLogoPayAmount() public returns (uint256) {
-        (bool success, bytes memory data) = PROPERTY_ADDR.call(abi.encodeWithSignature("getOwnerValue(string)", "logo_payamount"));
+    function getLogoPayAmount() public view returns (uint256) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.staticcall(abi.encodeWithSignature("getOwnerValue(string)", "logo_payamount"));
         require(success, "get logo_payamount failed");
         return abi.decode(data, (uint256));
     }
