@@ -2030,7 +2030,7 @@ abstract contract SRC20Meta is Ownable {
         return _logo;
     }
 
-    function setLogoUrl(bytes memory logo_) public payable onlyOwner {
+    function setLogo(bytes memory logo_) public payable onlyOwner {
         require(logo_.length > 0 && logo_.length <= 512000, "invalid logo size");
         require(msg.value >= getLogoPayAmount(), "invalid pay amount");
         _logo = logo_;
