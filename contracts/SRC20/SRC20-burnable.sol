@@ -2007,7 +2007,8 @@ abstract contract Ownable is Context {
 // File: contracts/SRC20/SRC20Meta.sol
 
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.0;
+
 
 abstract contract SRC20Meta is Ownable {
     string _orgName;
@@ -2072,7 +2073,11 @@ abstract contract SRC20Meta is Ownable {
 // File: contracts/SRC20/SRC20-burnable.sol
 
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.0;
+
+
+
+
 
 contract SRC20 is SRC20Meta, ERC20, ERC20Permit, ERC20Burnable {
     constructor(
