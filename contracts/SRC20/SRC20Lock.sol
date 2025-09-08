@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 
 contract SRC20Lock {
+    address token;
+
     uint256 no;
     mapping(address => uint256[]) addr2ids;
     mapping(uint256 => LockRecord) id2record;
@@ -27,8 +29,12 @@ contract SRC20Lock {
     event Lock(address _token, address _addr, uint256 _amount, uint256 _lockDay, uint256 _id);
     event Withdraw(address _token, address _addr, uint256 _amount, uint256[] _ids);
 
+    constructor(address _token) {
+        token = _token;
+    }
+
     function lock(address _token, address _to, uint256 _amount, uint256 _lockDay) public returns (uint256) {
-        require(_token != address(0), "invalid token address");
+        require(_token == token, "invalid token address");
         require(_amount > 0, "invalid amount");
         require(_lockDay > 0, "invalid lock day");
 
@@ -41,9 +47,10 @@ contract SRC20Lock {
     }
 
     function batchLock(address _token, address _to, uint256 _amount, uint256 _times, uint256 _spaceDay, uint256 _startDay) public returns (uint256[] memory) {
-        require(_token != address(0), "invalid token address");
+        require(_token == token, "invalid token address");
         require(_amount > 0, "invalid amount");
         require(_times > 0, "invalid times");
+        require(_amount / _times > 0, "amount/times must bigger than 0");
         require(_spaceDay + _startDay > 0, "_spaceDay + _startDay can't be 0");
 
         (bool success, bytes memory data) = _token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
@@ -62,6 +69,7 @@ contract SRC20Lock {
     }
 
     function withdrawByID(address _token, uint256[] memory _ids) public noReentrant returns (uint256) {
+        require(_token == token, "invalid token address");
         require(_ids.length > 0 && _ids.length <= 30, "invalid ids size, min: 1, max: 30");
         uint256 amount;
         LockRecord memory record;
@@ -86,6 +94,10 @@ contract SRC20Lock {
             emit Withdraw(_token, tx.origin, amount, retIDs);
         }
         return amount;
+    }
+
+    function getToken() public view returns (address) {
+        return token;
     }
 
     function getTotalIDNum(address _addr) public view returns (uint256) {
