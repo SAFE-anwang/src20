@@ -7,8 +7,6 @@ contract SRC20Lock {
     mapping(uint256 => LockRecord) id2record;
     mapping(uint256 => uint256) id2index;
 
-    uint256 min_lock_amount;
-
     bool internal flag; // re-entrant lock
     modifier noReentrant() {
         require(!flag, "Error: reentrant call");
@@ -32,7 +30,6 @@ contract SRC20Lock {
     function lock(address _token, address _to, uint256 _amount, uint256 _lockDay) public returns (uint256) {
         require(_token != address(0), "invalid token address");
         require(_amount > 0, "invalid amount");
-        require(_amount >= min_lock_amount, "less than min_lock_amount");
         require(_lockDay > 0, "invalid lock day");
 
         (bool success, bytes memory data) = _token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
@@ -47,7 +44,6 @@ contract SRC20Lock {
         require(_token != address(0), "invalid token address");
         require(_amount > 0, "invalid amount");
         require(_times > 0, "invalid times");
-        require(_amount / _times >= min_lock_amount, "_amount/_times less than min_lock_amount");
         require(_spaceDay + _startDay > 0, "_spaceDay + _startDay can't be 0");
 
         (bool success, bytes memory data) = _token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
@@ -91,8 +87,6 @@ contract SRC20Lock {
         }
         return amount;
     }
-
-    function setMinLockAmount(uint256)
 
     function getTotalIDNum(address _addr) public view returns (uint256) {
         return addr2ids[_addr].length;
