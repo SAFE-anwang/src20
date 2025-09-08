@@ -44,43 +44,50 @@ contract SRC20LockFactory {
     }
 
     function getTotalIDNum(address _token, address _addr) public view returns (uint256) {
-        (bool success, bytes memory data) = getLock(_token).staticcall(abi.encodeWithSignature("getTotalIDNum(address)", _addr));
+        if(token2lock[_token] == address(0)) revert("can't get token-lock-contract");
+        (bool success, bytes memory data) = token2lock[_token].staticcall(abi.encodeWithSignature("getTotalIDNum(address)", _addr));
         if(!success) revert(getRevertMessage(data));
         return abi.decode(data, (uint256));
     }
 
     function getTotalIDs(address _token, address _addr, uint256 _start, uint256 _count) public view returns (uint256[] memory) {
-        (bool success, bytes memory data) = getLock(_token).staticcall(abi.encodeWithSignature("getTotalIDs(address,uint256,uint256)", _addr, _start, _count));
+        if(token2lock[_token] == address(0)) revert("can't get token-lock-contract");
+        (bool success, bytes memory data) = token2lock[_token].staticcall(abi.encodeWithSignature("getTotalIDs(address,uint256,uint256)", _addr, _start, _count));
         if(!success) revert(getRevertMessage(data));
         return abi.decode(data, (uint256[]));
     }
 
     function getAvailableIDNum(address _token, address _addr) public view returns (uint256) {
-        (bool success, bytes memory data) = getLock(_token).staticcall(abi.encodeWithSignature("getAvailableIDNum(address)", _addr));
+        if(token2lock[_token] == address(0)) revert("can't get token-lock-contract");
+        (bool success, bytes memory data) = token2lock[_token].staticcall(abi.encodeWithSignature("getAvailableIDNum(address)", _addr));
         if(!success) revert(getRevertMessage(data));
         return abi.decode(data, (uint256));
     }
 
     function getAvailableIDs(address _token, address _addr, uint256 _start, uint256 _count) public view returns (uint256[] memory) {
-        (bool success, bytes memory data) = getLock(_token).staticcall(abi.encodeWithSignature("getAvailableIDs(address,uint256,uint256)", _addr, _start, _count));
+        if(token2lock[_token] == address(0)) revert("can't get token-lock-contract");
+        (bool success, bytes memory data) = token2lock[_token].staticcall(abi.encodeWithSignature("getAvailableIDs(address,uint256,uint256)", _addr, _start, _count));
         if(!success) revert(getRevertMessage(data));
         return abi.decode(data, (uint256[]));
     }
 
     function getLockedIDNum(address _token, address _addr) public view returns (uint256) {
-        (bool success, bytes memory data) = getLock(_token).staticcall(abi.encodeWithSignature("getLockedIDNum(address)", _addr));
+        if(token2lock[_token] == address(0)) revert("can't get token-lock-contract");
+        (bool success, bytes memory data) = token2lock[_token].staticcall(abi.encodeWithSignature("getLockedIDNum(address)", _addr));
         if(!success) revert(getRevertMessage(data));
         return abi.decode(data, (uint256));
     }
 
     function getLockedIDs(address _token, address _addr, uint256 _start, uint256 _count) public view returns (uint256[] memory) {
-        (bool success, bytes memory data) = getLock(_token).staticcall(abi.encodeWithSignature("getLockedIDs(address,uint256,uint256)", _addr, _start, _count));
+        if(token2lock[_token] == address(0)) revert("can't get token-lock-contract");
+        (bool success, bytes memory data) = token2lock[_token].staticcall(abi.encodeWithSignature("getLockedIDs(address,uint256,uint256)", _addr, _start, _count));
         if(!success) revert(getRevertMessage(data));
         return abi.decode(data, (uint256[]));
     }
 
     function getRecordByID(address _token, uint256 _id) public view returns (LockRecord memory) {
-        (bool success, bytes memory data) = getLock(_token).staticcall(abi.encodeWithSignature("getRecordByID(uint256)", _id));
+        if(token2lock[_token] == address(0)) revert("can't get token-lock-contract");
+        (bool success, bytes memory data) = token2lock[_token].staticcall(abi.encodeWithSignature("getRecordByID(uint256)", _id));
         if(!success) revert(getRevertMessage(data));
         return abi.decode(data, (LockRecord));
     }
