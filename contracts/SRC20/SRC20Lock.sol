@@ -38,7 +38,7 @@ contract SRC20Lock {
         (bool success, bytes memory data) = _token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
         if(!success) revert(getRevertMessage(data));
 
-        uint id = addRecord(_to, _amount, _lockDay);
+        uint256 id = addRecord(_to, _amount, _lockDay);
         emit Lock(_token, _to, _amount, _lockDay, id);
         return id;
     }
@@ -54,8 +54,8 @@ contract SRC20Lock {
         if(!success) revert(getRevertMessage(data));
 
         uint256[] memory ids = new uint256[](_times);
-        uint batchAmount = _amount / _times;
-        uint i;
+        uint256 batchAmount = _amount / _times;
+        uint256 i;
         for(; i < _times - 1; i++) {
             ids[i] = addRecord(_to, batchAmount, _startDay + (i + 1) * _spaceDay);
             emit Lock(_token, _to, batchAmount, _startDay + (i + 1) * _spaceDay, ids[i]);
@@ -91,6 +91,8 @@ contract SRC20Lock {
         }
         return amount;
     }
+
+    function setMinLockAmount(uint256)
 
     function getTotalIDNum(address _addr) public view returns (uint256) {
         return addr2ids[_addr].length;
@@ -195,8 +197,8 @@ contract SRC20Lock {
     // add record
     function addRecord(address _addr, uint256 _amount, uint256 _lockDay) internal returns (uint256) {
         require(_lockDay != 0, "invalid lock day");
-        uint unlockHeight = block.number + _lockDay * getNumberInDay();
-        uint id = ++no;
+        uint256 unlockHeight = block.number + _lockDay * getNumberInDay();
+        uint256 id = ++no;
         addr2ids[_addr].push(id);
         id2record[id] = LockRecord(id, _addr, _amount, _lockDay, block.number, unlockHeight);
         id2index[id] = addr2ids[_addr].length - 1;
@@ -206,8 +208,8 @@ contract SRC20Lock {
     // delete record
     function delRecord(uint256 _id) internal {
         require(id2record[_id].addr == tx.origin, "invalid record id");
-        uint[] storage ids = addr2ids[tx.origin];
-        uint pos = id2index[_id];
+        uint256[] storage ids = addr2ids[tx.origin];
+        uint256 pos = id2index[_id];
         ids[pos] = ids[ids.length - 1];
         id2index[ids[pos]] = pos;
         ids.pop();
