@@ -33,27 +33,27 @@ contract SRC20Lock {
         token = _token;
     }
 
-    function lock(address _token, address _to, uint256 _amount, uint256 _lockDay) public returns (uint256) {
-        require(_token == token, "invalid token address");
+    function lock(address _to, uint256 _amount, uint256 _lockDay) public returns (uint256) {
+        require(token != address(0), "invalid token address");
         require(_amount > 0, "invalid amount");
         require(_lockDay > 0, "invalid lock day");
 
-        (bool success, bytes memory data) = _token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
+        (bool success, bytes memory data) = token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
         if(!success) revert(getRevertMessage(data));
 
         uint256 id = addRecord(_to, _amount, _lockDay);
-        emit Lock(_token, _to, _amount, _lockDay, id);
+        emit Lock(token, _to, _amount, _lockDay, id);
         return id;
     }
 
-    function batchLock(address _token, address _to, uint256 _amount, uint256 _times, uint256 _spaceDay, uint256 _startDay) public returns (uint256[] memory) {
-        require(_token == token, "invalid token address");
+    function batchLock(address _to, uint256 _amount, uint256 _times, uint256 _spaceDay, uint256 _startDay) public returns (uint256[] memory) {
+        require(token != address(0), "invalid token address");
         require(_amount > 0, "invalid amount");
         require(_times > 0, "invalid times");
         require(_amount / _times > 0, "amount/times must bigger than 0");
         require(_spaceDay + _startDay > 0, "_spaceDay + _startDay can't be 0");
 
-        (bool success, bytes memory data) = _token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
+        (bool success, bytes memory data) = token.call(abi.encodeWithSignature("transferFrom(address,address,uint256)", msg.sender, address(this), _amount));
         if(!success) revert(getRevertMessage(data));
 
         uint256[] memory ids = new uint256[](_times);
@@ -61,15 +61,15 @@ contract SRC20Lock {
         uint256 i;
         for(; i < _times - 1; i++) {
             ids[i] = addRecord(_to, batchAmount, _startDay + (i + 1) * _spaceDay);
-            emit Lock(_token, _to, batchAmount, _startDay + (i + 1) * _spaceDay, ids[i]);
+            emit Lock(token, _to, batchAmount, _startDay + (i + 1) * _spaceDay, ids[i]);
         }
         ids[i] = addRecord(_to, batchAmount + _amount % _times, _startDay + (i + 1) * _spaceDay);
-        emit Lock(_token, _to, batchAmount + _amount % _times, _startDay + (i + 1) * _spaceDay, ids[i]);
+        emit Lock(token, _to, batchAmount + _amount % _times, _startDay + (i + 1) * _spaceDay, ids[i]);
         return ids;
     }
 
-    function withdrawByID(address _token, uint256[] memory _ids) public noReentrant returns (uint256) {
-        require(_token == token, "invalid token address");
+    function withdrawByID(uint256[] memory _ids) public noReentrant returns (uint256) {
+        require(token != address(0), "invalid token address");
         require(_ids.length > 0 && _ids.length <= 30, "invalid ids size, min: 1, max: 30");
         uint256 amount;
         LockRecord memory record;
@@ -85,13 +85,13 @@ contract SRC20Lock {
             temps[k++] = _ids[i];
         }
         if(amount != 0) {
-            (bool success, bytes memory data) = _token.call(abi.encodeWithSignature("transfer(address,uint256)", tx.origin, amount));
+            (bool success, bytes memory data) = token.call(abi.encodeWithSignature("transfer(address,uint256)", tx.origin, amount));
             if(!success) revert(getRevertMessage(data));
             uint256[] memory retIDs = new uint256[](k);
             for(uint256 i; i < k; i++) {
                 retIDs[i] = temps[i];
             }
-            emit Withdraw(_token, tx.origin, amount, retIDs);
+            emit Withdraw(token, tx.origin, amount, retIDs);
         }
         return amount;
     }
