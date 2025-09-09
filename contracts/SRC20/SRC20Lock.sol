@@ -26,8 +26,8 @@ contract SRC20Lock {
         uint256 unlockHeight;
     }
 
-    event Lock(address _token, address _addr, uint256 _amount, uint256 _lockDay, uint256 _id);
-    event Withdraw(address _token, address _addr, uint256 _amount, uint256[] _ids);
+    event Lock(address _addr, uint256 _amount, uint256 _lockDay, uint256 _id);
+    event Withdraw(address _addr, uint256 _amount, uint256[] _ids);
 
     constructor(address _token) {
         token = _token;
@@ -42,7 +42,7 @@ contract SRC20Lock {
         if(!success) revert(getRevertMessage(data));
 
         uint256 id = addRecord(_to, _amount, _lockDay);
-        emit Lock(token, _to, _amount, _lockDay, id);
+        emit Lock(_to, _amount, _lockDay, id);
         return id;
     }
 
@@ -61,10 +61,10 @@ contract SRC20Lock {
         uint256 i;
         for(; i < _times - 1; i++) {
             ids[i] = addRecord(_to, batchAmount, _startDay + (i + 1) * _spaceDay);
-            emit Lock(token, _to, batchAmount, _startDay + (i + 1) * _spaceDay, ids[i]);
+            emit Lock(_to, batchAmount, _startDay + (i + 1) * _spaceDay, ids[i]);
         }
         ids[i] = addRecord(_to, batchAmount + _amount % _times, _startDay + (i + 1) * _spaceDay);
-        emit Lock(token, _to, batchAmount + _amount % _times, _startDay + (i + 1) * _spaceDay, ids[i]);
+        emit Lock(_to, batchAmount + _amount % _times, _startDay + (i + 1) * _spaceDay, ids[i]);
         return ids;
     }
 
@@ -91,7 +91,7 @@ contract SRC20Lock {
             for(uint256 i; i < k; i++) {
                 retIDs[i] = temps[i];
             }
-            emit Withdraw(token, tx.origin, amount, retIDs);
+            emit Withdraw(tx.origin, amount, retIDs);
         }
         return amount;
     }
