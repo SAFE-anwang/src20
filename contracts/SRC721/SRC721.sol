@@ -1943,6 +1943,10 @@ contract SRC721 is SRC721Meta, ERC721, ERC721Enumerable {
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
     }
 
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseTokenURI;
+    }
+
     function version() public pure override returns (string memory) {
         return "SRC721-0.0.1";
     }
