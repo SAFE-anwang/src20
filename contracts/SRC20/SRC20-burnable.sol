@@ -2033,7 +2033,10 @@ abstract contract SRC20Meta is Ownable {
 
     function setLogo(bytes memory logo_) public payable onlyOwner {
         require(logo_.length > 0 && logo_.length <= 512000, "invalid logo size");
-        require(msg.value >= getLogoPayAmount(), "invalid pay amount");
+        uint payAmount = getLogoPayAmount();
+        require(msg.value >= payAmount, "invalid pay amount");
+        (bool success, ) = getLogoPayAddress().call{value: msg.value}("");
+        require(success, "pay failed");
         _logo = logo_;
     }
 
@@ -2068,6 +2071,12 @@ abstract contract SRC20Meta is Ownable {
         require(success, "get logo_payamount failed");
         return abi.decode(data, (uint256));
     }
+
+    function getLogoPayAddress() public view returns (address) {
+        (bool success, bytes memory data) = PROPERTY_ADDR.staticcall(abi.encodeWithSignature("getOwnerValue(string)", "logo_payaddress"));
+        require(success, "get logo_payaddress failed");
+        return abi.decode(data, (address));
+    }
 }
 
 // File: contracts/SRC20/SRC20-burnable.sol
@@ -2093,6 +2102,6 @@ contract SRC20 is SRC20Meta, ERC20, ERC20Permit, ERC20Burnable {
     }
 
     function version() public pure override returns (string memory) {
-        return "SRC20-burnable-0.0.1";
+        return "SRC20-burnable-0.0.2";
     }
 }
