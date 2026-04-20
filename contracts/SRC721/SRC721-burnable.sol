@@ -1986,6 +1986,6 @@ contract SRC721 is SRC721Meta, ERC721, ERC721Enumerable, ERC721Burnable {
     }
 
     function version() public pure override returns (string memory) {
-        return "SRC721-0.0.2";
+        return "SRC721-burnable-0.0.2";
     }
 }
